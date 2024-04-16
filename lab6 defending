@@ -1,0 +1,106 @@
+using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Metrics;
+using System.Diagnostics.Tracing;
+using System.Drawing;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+using System.Xml.Linq;
+using static System.Formats.Asn1.AsnWriter;
+using static System.Net.Mime.MediaTypeNames;
+
+
+//я 22 в списке
+#region 1_3
+struct Static
+{
+
+    public string answer { get; private set; }
+    public double count { get; private set; }
+    public Static(string a, double c)
+    {
+        answer = a;
+        count = c;
+    }
+    public void display()
+    {
+        Console.Write("\n{0, -40}", $"{answer}");
+        Console.Write("{0, -40}", $"{count}");
+    }
+}
+public class Program
+{
+    private Static[] Sort(Static[] table)
+    {
+
+        int d = table.Length / 2;
+        while (d >= 1)
+        {
+            for (int i = d; i < table.Length; i++)
+            {
+                int j = i;
+                while ((j >= d) && (table[j - d].count < table[j].count))
+                {
+                    Static k = table[j];
+                    table[j] = table[j-d];
+                    table[j-d] = k;
+                    j = j - d;
+                }
+            }
+
+            d = d / 2;
+        }
+
+        return table;
+    }
+    public static void Main(string[] args)
+    {
+        Console.Write("Кол-во респондентов: ");
+        int count = int.Parse(Console.ReadLine());
+        Static[] table = new Static[count];
+        string a;
+        for (int i = 0; i < count; i++)
+        {
+            Console.WriteLine("\n{0:d} респондент", i + 1);
+            Console.WriteLine("Кто является человеком года?");
+            a = Console.ReadLine();
+            table[i] = new Static(a, 0);
+        }
+        for (int i = 0; i < count; i++)
+        {
+            a = table[i].answer;
+            double h = 0;
+            for (int j = 0; j < count; j++)
+            {
+                if (a == table[j].answer) h++;
+                table[i] = new Static(a, 100 * h / count);
+            }
+        }
+        var sort = new Program();
+        table = sort.Sort(table);
+
+        string[] c = new string[count];
+        Static[] b = table;
+        Console.Write("\n\nНаиболее частные ответы:\tДоли встречи, %");
+        int k = 0;
+        for (int i = 0; i < b.Length; i++)
+        {
+            if (k == 5) break;
+            if ((i >= 1) && (c[i - 1] != b[i].answer))
+            {
+                b[i].display();
+                k++;
+            }
+            else if (i < 1)
+            {
+                b[i].display();
+                k++;
+            }
+            c[i] = b[i].answer;
+        }
+    }
+}
+#endregion
