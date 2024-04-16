@@ -36,24 +36,60 @@ public class Program
     private Static[] Sort(Static[] table)
     {
 
+        /*        int d = table.Length / 2;
+                while (d >= 1)
+                {
+                    for (int i = d; i < table.Length; i += d)
+                    {
+                        int j = i - d;
+                        Static k = table[i];
+                        while ((j >= 0) && (table[i].count > table[j].count))
+                        {
+                            table[j + d] = table[j];
+                            j = j - d;
+                        }
+                        table[j + d] = k;
+                    }
+
+                    d = d / 2;
+                }
+                return table;*/
+
+        /*        int d = table.Length / 2;
+                while (d >= 1)
+                {
+                    for (int i = d; i < table.Length; i++)
+                    {
+                        int j;
+                        Static k = table[i];
+                        for (j = i; (j >= d) && (table[j - d].count < table[i].count); j -= d)
+                        {
+                            table[j] = table[j - d];
+                        }
+                        table[j] = k;
+                    }
+
+                    d = d / 2;
+                }*/
+
         int d = table.Length / 2;
-        while (d >= 1)
+        while (d > 0)
         {
             for (int i = d; i < table.Length; i++)
             {
                 int j = i;
+                Static k = table[j];
                 while ((j >= d) && (table[j - d].count < table[j].count))
                 {
-                    Static k = table[j];
-                    table[j] = table[j-d];
-                    table[j-d] = k;
+
+                    table[j] = table[j - d];
                     j = j - d;
                 }
-            }
+                table[j] = k;
 
+            }
             d = d / 2;
         }
-
         return table;
     }
     public static void Main(string[] args)
@@ -82,8 +118,16 @@ public class Program
         var sort = new Program();
         table = sort.Sort(table);
 
+
+
         string[] c = new string[count];
         Static[] b = table;
+
+        for (int i = 0; i < b.Length; i++)
+        {
+            b[i].display();
+        }
+
         Console.Write("\n\nНаиболее частные ответы:\tДоли встречи, %");
         int k = 0;
         for (int i = 0; i < b.Length; i++)
