@@ -1,0 +1,105 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace ConsoleApp1
+{
+    public abstract class Task
+    {
+        public abstract string ToString(string input);
+    }
+    public class Task1 : Task
+    {
+        public override string ToString(string input)
+        {
+            string result = "";
+            string[] separator = { ".", "!", "?" };
+            string[] sentences = input.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            int imax = 0;
+            int i = 0;
+            int max = int.MinValue;
+            foreach (string sentence in sentences)
+            {
+                string[] arr = sentence.Split(' ');
+                i++;
+                if (arr.Length > max)
+                {
+                    max = arr.Length;
+                    imax = i;
+                }
+            }
+            result = sentences[imax-1];
+            return result;
+        }
+    }
+    public class Task2 : Task
+    {
+        public override string ToString(string input)
+        {
+            string[] result = new string[1000];
+            string[] words = input.Split(' ');
+
+            int i = -1;
+            foreach (string word in words)
+            {
+                Dictionary<char, int> Letters = new Dictionary<char, int>();
+                foreach (char letter in word)
+                {
+                    if (!Letters.ContainsKey(letter))
+                    {
+                        Letters[letter] = 0;
+                    }
+                }
+                foreach (char letter in word)
+                {
+                    if (Letters.ContainsKey(letter))
+                    {
+                        Letters[letter]++;
+                    }
+                }
+                bool f = true;
+                foreach(var letter in Letters)
+                {
+                    if (letter.Value > 1)
+                    {
+                        f=false;
+                    }
+                }
+                if (f)
+                {
+                    i += 1;
+                    result[i] = word;
+                }
+            }
+            for (int j=0; j < result.Length; j++)
+            {
+                return result[j];
+            }
+            //
+            return result[0];
+
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string text = "привет ао паволдпов ппп от арнекув ыды дзш";
+            Task[] tasks = new Task[] {
+                new Task1(),
+                new Task2()
+            };
+            Console.WriteLine(tasks[0].ToString(text));
+            Console.WriteLine();
+
+            
+            Console.WriteLine(tasks[1].ToString(text));
+            Console.WriteLine();
+        }
+    }
+}
