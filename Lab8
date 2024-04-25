@@ -1,0 +1,287 @@
+using System;
+using System.Text;
+using System.Text.RegularExpressions;
+
+abstract class Task
+{
+    public abstract string ToString();
+}
+
+class Task2 : Task
+{
+    private string message;
+    public Task2(string message)
+    {
+        this.message = message;
+    }
+    public override string ToString()
+    {
+        string encryptedMessage = Encrypt(message);
+        return $"Задание 2:\n{encryptedMessage}";
+    }
+    private string Encrypt(string text)
+    {
+        string result = "";
+        string[] words = text.Split(' ');
+        for (int i = 0; i < words.Length; i++)
+        {
+            char[] wordChars = words[i].ToCharArray();
+            Array.Reverse(wordChars);
+            words[i] = new string(wordChars);
+            result += $" {words[i]}";
+        }
+        return result;
+    }
+}
+
+class Task4 : Task
+{
+    private string text;
+    public Task4(string text)
+    {
+        this.text = text;
+    }
+    public override string ToString()
+    {
+        string complexity = CalculateComplexity(text);
+        return $"Задание 4: \n{complexity}";
+    }
+    private string CalculateComplexity(string text)
+    {
+        string result = "";
+        string[] separator1 = { ".", "!", "?" };
+        string[] sentences = text.Split(separator1, StringSplitOptions.RemoveEmptyEntries);
+        char[] punctuation = { '.', ',', ';', ':', '!', '?', '-', '"', '(', ')', '[', ']', '{', '}', '/' };
+        foreach (string sentence in sentences)
+        {
+            string[] words = sentence.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            int AmountOfWords = words.Length;
+            int count = 0;
+            foreach (char c in sentence)
+            {
+                if (Array.IndexOf(punctuation, c) != -1)
+                {
+                    count++;
+                }
+            }
+            int complexity = AmountOfWords + count;
+            result += $"{sentence}: {complexity}\n";
+        }
+        return result;
+    }
+}
+
+class Task6 : Task
+{
+    private string text;
+    public Task6(string text)
+    {
+        this.text = text;
+    }
+    public override string ToString()
+    {
+        string syllableCounts = CountSyllables(text);
+        return $"Задание 6: \n{syllableCounts}";
+    }
+    private string CountSyllables(string text)
+    {
+        Dictionary<int, int> AmountOfSyllable = new Dictionary<int, int>();
+        string result = "";
+        string[] words = text.Split(" ");
+        char[] rusvowel = { 'а', 'о', 'у', 'ы', 'э', 'е', 'ё', 'и', 'ю', 'я' };
+        foreach (string word in words)
+        {
+            int count = 0;
+            foreach (char letter in word)
+            {
+                if (Array.IndexOf(rusvowel, letter) != -1)
+                {
+                    count++;
+                }
+            }
+            if (!AmountOfSyllable.ContainsKey(count))
+            {
+                AmountOfSyllable[count] = 0;
+            }
+            AmountOfSyllable[count] += 1;
+        }
+        foreach (var k in AmountOfSyllable)
+        {
+            result += $"{k.Key} слогов: {k.Value}\n";
+        }
+        return result;
+    }
+}
+
+class Task8 : Task
+{
+    private string text;
+    public Task8(string text)
+    {
+        this.text = text;
+    }
+    public override string ToString()
+    {
+        string result = "Задание 8:\n";
+        int maxLength = 50;
+        string[] words = text.Split(' ');
+        string currentLine = "";
+        foreach (string word in words)
+        {
+            if ((currentLine + word + 1).Length > maxLength)
+            {
+                currentLine = currentLine.Substring(0, currentLine.Length - 1);
+                int k = maxLength - currentLine.Length;
+                int count = 0;
+                foreach (char symbol in currentLine)
+                {
+                    if (symbol == ' ')
+                    {
+                        count++;
+                    }
+                }
+                int d1 = (count + k) / count;
+                double d2 = (count + k) % count;
+                string[] WordsOfLine = currentLine.Split(" ");
+                int c = 1;
+                currentLine = "";
+                foreach (string a in WordsOfLine)
+                {
+                    currentLine += a;
+                    for (int i = 0; i < d1; i++)
+                    {
+                        currentLine += " ";
+                    }
+                    if (c <= d2)
+                    {
+                        currentLine += " ";
+                        c += 1;
+                    }
+                }
+                currentLine.Trim();
+                result += $"{currentLine}\n";
+                currentLine = "";
+            }
+            currentLine += word + " ";
+        }
+        return result;
+    }
+}
+
+class Task9 : Task
+{
+    private string text;
+    private Dictionary<string, string> TableOfCodes;
+    public Task9(string text)
+    {
+        this.text = text;
+        TableOfCodes = new Dictionary<string, string>();
+    }
+    public override string ToString()
+    {
+        Dictionary<string, int> TableOfAmounts = new Dictionary<string, int>();
+        string result = "";
+        string[] useless = { "♂", "♀", "▲", "♫", "☼" };
+        for (int i = 0; i < text.Length - 1; i++)
+        {
+            string pair = text[i].ToString() + text[i + 1].ToString();
+            string[] arr = text.Split(pair);
+            if (!TableOfAmounts.ContainsKey(pair))
+            {
+                TableOfAmounts[pair] = arr.Length - 1;
+            }
+        }
+        int j = 0;
+        var TableOfAmountsSorted = TableOfAmounts.OrderByDescending(x => x.Value);
+        result += text;
+        foreach (var k in TableOfAmountsSorted)
+        {
+            var max = k.Value;
+            TableOfCodes[k.Key] = useless[j];
+            result = Regex.Replace(result, k.Key, useless[j]);
+            j += 1;
+            if (j == 5)
+            {
+                break;
+            }
+        }
+        foreach (var k in TableOfCodes)
+        {
+            result += $"{k.Key} слогов: {k.Value}\n";
+        }
+        return result;
+    }
+    public Dictionary<string, string> GetTableOfCodes()
+    {
+        return TableOfCodes;
+    }
+}
+
+class Task10 : Task
+{
+    private string text;
+    private Dictionary<string, string> TableOfCodes;
+    public Task10(string text)
+    {
+        this.text = text;
+    }
+    public void SetCodeTable(Dictionary<string, string> TableOfCodes)
+    {
+        this.TableOfCodes = TableOfCodes;
+    }
+    public override string ToString()
+    {
+        string result = "";
+        result += text;
+        string Key = "";
+        for (int i=0; i<text.Length; i++)
+        {
+            string symbol = text[i].ToString();
+            if (TableOfCodes.ContainsValue(symbol))
+            {
+                foreach (var k in TableOfCodes)
+                {
+                    if (k.Value == symbol)
+                    {
+                        Key = k.Key;
+                    }
+                }
+                result = Regex.Replace(result, symbol, Key);
+            }
+        }
+        return result;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string text = "После многолетних исследований ученые обнаружили тревожную тенденцию в вырубке лесов Амазонии. Анализ данных показал, что основной участник разрушения лесного покрова – человеческая деятельность. За последние десятилетия рост объема вырубки достиг критических показателей. Главными факторами, способствующими этому, являются промышленные рубки, производство древесины, расширение сельскохозяйственных угодий и незаконная добыча древесины. Это приводит к серьезным экологическим последствиям, таким как потеря биоразнообразия, ухудшение климата и угроза вымирания многих видов животных и растений. \r\nДвигатель самолета – это сложная инженерная конструкция, обеспечивающая подъем, управление и движение в воздухе. Он состоит из множества компонентов, каждый из которых играет важную роль в общей работе механизма. Внутреннее устройство двигателя включает в себя компрессор, камеру сгорания, турбину и системы управления и охлаждения. Принцип работы основан на воздушно-топливной смеси, которая подвергается сжатию, воспламенению и расширению, обеспечивая движение воздушного судна.\r\n1 июля 2015 года Греция объявила о дефолте по государственному долгу, став первой развитой страной в истории, которая не смогла выплатить свои долговые обязательства в полном объеме. Сумма дефолта составила порядка 1,6 миллиарда евро. Этому предшествовали долгие переговоры с международными кредиторами, такими как Международный валютный фонд (МВФ), Европейский центральный банк (ЕЦБ) и Европейская комиссия (ЕК), о программах финансовой помощи и реструктуризации долга. Основными причинами дефолта стали недостаточная эффективность реформ, направленных на улучшение финансовой стабильности страны, а также политическая нестабильность, что вызвало потерю доверия со стороны международных инвесторов и кредиторов. Последствия дефолта оказались глубокими и долгосрочными: сокращение кредитного рейтинга страны, увеличение затрат на заемный капитал, рост стоимости заимствований и утрата доверия со стороны международных инвесторов.\r\nФьорды – это ущелья, формирующиеся ледниками и заполняющиеся морской водой. Название происходит от древнескандинавского слова \"fjǫrðr\". Эти глубокие заливы, окруженные высокими горами, представляют захватывающие виды и природную красоту. Они популярны среди туристов и известны под разными названиями: в Норвегии – \"фьорды\", в Шотландии – \"фьордс\", в Исландии – \"фьордар\". Фьорды играют важную роль в культуре и туризме региона, продолжая вдохновлять людей со всего мира.\r\nWilliam Shakespeare, widely regarded as one of the greatest writers in the English language, authored a total of 37 plays, along with numerous poems and sonnets. He was born in Stratford-upon-Avon, England, in 1564, and died in 1616. Shakespeare's most famous works, including \"Romeo and Juliet,\" \"Hamlet,\" \"Macbeth,\" and \"Othello,\" were written during the late 16th and early 17th centuries. \"Romeo and Juliet,\" a tragic tale of young love, was penned around 1595. \"Hamlet,\" one of his most celebrated tragedies, was written in the early 1600s, followed by \"Macbeth,\" a gripping drama exploring themes of ambition and power, around 1606. \"Othello,\" a tragedy revolving around jealousy and deceit, was also composed during this period, believed to be around 1603.\r\nПервое кругосветное путешествие было осуществлено флотом, возглавляемым португальским исследователем Фернаном Магелланом. Путешествие началось 20 сентября 1519 года, когда флот, состоящий из пяти кораблей и примерно 270 человек, отправился из порту Сан-Лукас в Испании. Хотя Магеллан не закончил свое путешествие из-за гибели в битве на Филиппинах в 1521 году, его экспедиция стала первой, которая успешно обогнула Землю и доказала ее круглую форму. Это путешествие открыло новые морские пути и имело огромное значение для картографии и географических открытий.\r\n";
+        var task2 = new Task2(text);
+        string text2 = task2.ToString();
+        Console.Write(text2);
+
+        var task4 = new Task4(text);
+        string text4 = task4.ToString();
+        Console.Write("\n\n{0}", text4);
+
+        var task6 = new Task6(text);
+        string text6 = task6.ToString();
+        Console.Write("\n\n{0}", text6);
+
+        var task8 = new Task8(text);
+        string text8 = task8.ToString();
+        Console.Write("\n\n{0}", text8);
+
+        var task9 = new Task9(text);
+        string text9 = task9.ToString();
+        Console.Write("\n\n{0}", text9);
+
+        var task10 = new Task10(text9);
+        var codeTable = task9.GetTableOfCodes();
+        task10.SetCodeTable(codeTable);
+        string text10 = task10.ToString();
+        Console.Write("\n\n{0}", text10);
+    }
+}
