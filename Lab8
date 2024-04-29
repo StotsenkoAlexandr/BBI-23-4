@@ -24,15 +24,21 @@ class Task2 : Task
     private string Encrypt(string text)
     {
         string result = "";
-        string[] words = text.Split(' ');
-        for (int i = 0; i < words.Length; i++)
+        string[] words = Regex.Split(text, @"(\W)");
+        foreach (string word in words)
         {
-            char[] wordChars = words[i].ToCharArray();
-            Array.Reverse(wordChars);
-            words[i] = new string(wordChars);
-            result += $"{words[i]} ";
+            if (Regex.IsMatch(word, @"\w+"))
+            {
+                char[] wordChars = word.ToCharArray();
+                Array.Reverse(wordChars);
+                result += $"{new string(wordChars)}";
+            }
+            else
+            {
+                result += word;
+            }
         }
-        return result.TrimEnd();
+        return result;
     }
     private string Decrypt(string text)
     {
