@@ -154,7 +154,7 @@ public class Program
 #endregion
 
 #region 2_5
-/*public abstract class JumpsOnSki
+public abstract class JumpsOnSki
 {
     protected string _surname;
     protected int _Distance;
@@ -201,7 +201,40 @@ public class Program
     public virtual void displayAll()
     {
 
-    }   
+    }
+    public static void QuickSort(JumpsOnSki[] arr, int left, int right)
+    {
+        if (left < right)
+        {
+            int pivot = Partition(arr, left, right);
+
+            QuickSort(arr, left, pivot - 1);
+            QuickSort(arr, pivot + 1, right);
+        }
+    }
+
+    private static int Partition(JumpsOnSki[] arr, int left, int right)
+    {
+        int pivot = arr[right].ptsTotal;
+        int i = left - 1;
+
+        for (int j = left; j < right; j++)
+        {
+            if (arr[j].ptsTotal >= pivot)
+            {
+                i++;
+                int temp = arr[i].ptsTotal;
+                arr[i].ptsTotal = arr[j].ptsTotal;
+                arr[j].ptsTotal = temp;
+            }
+        }
+
+        int temp1 = arr[i + 1].ptsTotal;
+        arr[i + 1].ptsTotal = arr[right].ptsTotal;
+        arr[right].ptsTotal = temp1;
+
+        return i + 1;
+    }
 }
 class m120 : JumpsOnSki
 {
@@ -304,8 +337,10 @@ class Program1
         {
             s[i].displayAll();
         }
-        var sort = new Program1();
-        s = sort.Sort(s);
+        /*var sort = new Program1();*/
+
+        JumpsOnSki.QuickSort(s, 0, s.Length-1);
+
         Console.WriteLine();
         Console.WriteLine("Дистанция\tФамилия\t\tКол-во баллов");
         for (int i = 0; i < s.Length; i++)
@@ -313,7 +348,7 @@ class Program1
             s[i].display();
         }
     }
-}*/
+}
 #endregion
 
 
