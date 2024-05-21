@@ -1,0 +1,186 @@
+/*using System;
+using System.Linq;
+
+struct Contact
+{
+    public int id { get; private set; }
+    public string name { get; private set; }
+    public string surname { get; private set; }
+    public string number { get; private set; }
+    public string email { get; private set; }
+    public Contact(int Id, string Name, string Surname, string Number, string Email)
+    {
+        id = Id;
+        name = Name;
+        surname = Surname;
+        number = Number;
+        email = Email;
+    }
+    public void display()
+    {
+        Console.Write("\n{0, -10}", $"{id}");
+        Console.Write("{0, -20}", $"{name}");
+        Console.Write("{0, -20}", $"{surname}");
+        Console.Write("{0, -20}", $"{number}");
+        Console.Write("{0, -20}", $"{email}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Contact[] contacts = new Contact[5]
+        {
+            new Contact(1, "Александр", "Стоценко", "1111111111", "mmgfdgdm@yandex.ru"),
+            new Contact(2, "Илья", "Глазков", "1234567890", "m123213mm@yandex.ru"),
+            new Contact(3, "Дмитрий", "Кузнецов", "1212121212", "mmfdsfsdm@yandex.ru"),
+            new Contact(4, "Вова", "Лунин", "1231231235", "mmmasdasdsa@yandex.ru"),
+            new Contact(5, "Артем", "Таранов", "7654890345", "mmm@yandex.ru")
+        };
+        for (int i = 0; i < contacts.Length - 1; i++)
+        {
+            for (int j = 0; j < contacts.Length - 1 - i; j++)
+            {
+                if (string.Compare(contacts[j].surname, contacts[j + 1].surname) > 0 ||
+                    (contacts[j].surname == contacts[j + 1].surname &&
+                     string.Compare(contacts[j].name, contacts[j + 1].name) > 0))
+                {
+                    Contact temp = contacts[j];
+                    contacts[j] = contacts[j + 1];
+                    contacts[j + 1] = temp;
+                }
+            }
+        }   
+        Console.Write("\n\nId:\tИмя\t\t\tФамилия\t\tНомер телефона\t\tПочта");
+        foreach (var contact in contacts)
+        {
+            contact.display();
+        }
+    }
+}*/
+
+using System;
+
+abstract class Contact
+{
+    public int id { get; private set; }
+    public string name { get; private set; }
+    public string surname { get; private set; }
+    public string number { get; private set; }
+    public string email { get; private set; }
+    public Contact(int Id, string Name, string Surname, string Number, string Email)
+    {
+        id = Id;
+        name = Name;
+        surname = Surname;
+        number = Number;
+        email = Email;
+    }
+    public abstract void display();
+}
+
+class Employee : Contact
+{
+    public decimal salary { get; private set; }
+    public DateTime EmploymentDate { get; private set; }
+    public Employee(int id, string firstName, string lastName, string phoneNumber, string email, decimal Salary, DateTime employmentDate)
+        : base(id, firstName, lastName, phoneNumber, email)
+    {
+        salary = Salary;
+        EmploymentDate = employmentDate;
+    }
+    public override void display()
+    {
+        Console.Write("\n{0, -10}", $"{id}");
+        Console.Write("{0, -20}", $"{name}");
+        Console.Write("{0, -20}", $"{surname}");
+        Console.Write("{0, -20}", $"{number}");
+        Console.Write("{0, -30}", $"{email}");
+        Console.Write("{0, -20}", $"{salary}");
+        Console.Write("{0, -20}", $"{EmploymentDate.ToShortDateString(),-10}");
+    }
+}
+
+class Counteragent : Contact
+{
+    public decimal ContractValue { get; }
+    public int ContractDurationDays { get; }
+    public Counteragent(int id, string firstName, string lastName, string phoneNumber, string email, decimal contractValue, int contractDurationDays)
+        : base(id, firstName, lastName, phoneNumber, email)
+    {
+        ContractValue = contractValue;
+        ContractDurationDays = contractDurationDays;
+    }
+    public override void display()
+    {
+        Console.Write("\n{0, -10}", $"{id}");
+        Console.Write("{0, -20}", $"{name}");
+        Console.Write("{0, -20}", $"{surname}");
+        Console.Write("{0, -20}", $"{number}");
+        Console.Write("{0, -30}", $"{email}");
+        Console.Write("{0, -20}", $"{ContractValue}");
+        Console.Write("{0, -20}", $"{ContractDurationDays}");
+    }
+}
+
+class Program
+{
+    private static int CompareContacts(Contact x, Contact y)
+    {
+        int lastNameComparison = string.Compare(x.surname, y.surname);
+        if (lastNameComparison == 0)
+        {
+            return string.Compare(x.name, y.name);
+        }
+        return lastNameComparison;
+    }
+    static void Main()
+    {
+        Employee[] employees = new Employee[5]
+        {
+            new Employee(1, "Александр", "Стоценко", "1111111111", "mmgfdgdm@yandex.ru", 50000m, new DateTime(2020, 1, 1)),
+            new Employee(2, "Илья", "Глазков", "1234567890", "m123213mm@yandex.ru", 60000m, new DateTime(2019, 2, 1)),
+            new Employee(3, "Дмитрий", "Кузнецов", "1212121212", "mmfdsfsdm@yandex.ru", 55000m, new DateTime(2021, 3, 1)),
+            new Employee(4, "Вова", "Лунин", "1231231235", "mmmasdasdsa@yandex.ru", 70000m, new DateTime(2018, 4, 1)),
+            new Employee(5, "Артем", "Таранов", "7654890345", "mmm@yandex.ru", 65000m, new DateTime(2022, 5, 1))
+        };
+
+        Counteragent[] counteragents = new Counteragent[5]
+        {
+            new Counteragent(6, "Владимир", "Виноградов", "1234324567", "fds@gmail.com", 100000m, 365),
+            new Counteragent(7, "Александр", "Тылибцев", "9872567434", "fdfdsfdsds@gmail.com", 150000m, 180),
+            new Counteragent(8, "Михаил", "Оганезов", "0987678654", "fd2134s@gmail.com", 200000m, 90),
+            new Counteragent(9, "Рокки", "Асап", "67897654", "fds432@gmail.com", 250000m, 120),
+            new Counteragent(10, "Меисон", "Марджелла", "4637849900", "f123dsads@gmail.com", 175000m, 240)
+        };
+
+        Array.Sort(employees, CompareContacts);
+        Array.Sort(counteragents, CompareContacts);
+
+        Console.WriteLine("\n\nEmployee:");
+        Console.Write("Id:\tИмя\t\t\tФамилия\t\tНомер телефона\t\tПочта\t\t\tЗарплата\tДата");
+        foreach (var employee in employees)
+        {
+            employee.display();
+        }
+
+        Console.WriteLine("\n\nCounteragent:");
+        Console.Write("Id:\tИмя\t\t\tФамилия\t\tНомер телефона\t\tПочта\t\t\tСтоимость\tСрок действия");
+        foreach (var counteragent in counteragents)
+        {
+            counteragent.display();
+        }
+        Contact[] allContacts = new Contact[employees.Length + counteragents.Length];
+        employees.CopyTo(allContacts, 0);
+        counteragents.CopyTo(allContacts, employees.Length);
+        Array.Sort(allContacts, CompareContacts);
+        Console.WriteLine("\n\nОбщая таблица:");
+        Console.Write("Id:\tИмя\t\t\tФамилия\t\tНомер телефона\t\tПочта\t\t\tДополнительно\tДополнительно");
+        foreach (var contact in allContacts)
+        {
+            contact.display();
+        }
+    }
+    
+}
