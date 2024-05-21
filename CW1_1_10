@@ -1,0 +1,60 @@
+using System;
+
+struct Contact
+{
+    public int id { get; private set; }
+    public string name { get; private set; }
+    public string surname { get; private set; }
+    public string number { get; private set; }
+    public string email { get; private set; }
+    public Contact(int Id, string Name, string Surname, string Number, string Email)
+    {
+        id = Id;
+        name = Name;
+        surname = Surname;
+        number = Number;
+        email = Email;
+    }
+    public void display()
+    {
+        Console.Write("\n{0, -10}", $"{id}");
+        Console.Write("{0, -20}", $"{name}");
+        Console.Write("{0, -20}", $"{surname}");
+        Console.Write("{0, -20}", $"{number}");
+        Console.Write("{0, -20}", $"{email}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Contact[] contacts = new Contact[5]
+        {
+            new Contact(1, "Александр", "Стоценко", "1111111111", "mmgfdgdm@yandex.ru"),
+            new Contact(2, "Илья", "Глазков", "1234567890", "m123213mm@yandex.ru"),
+            new Contact(3, "Дмитрий", "Кузнецов", "1212121212", "mmfdsfsdm@yandex.ru"),
+            new Contact(4, "Вова", "Лунин", "1231231235", "mmmasdasdsa@yandex.ru"),
+            new Contact(5, "Артем", "Таранов", "7654890345", "mmm@yandex.ru")
+        };
+        for (int i = 0; i < contacts.Length - 1; i++)
+        {
+            for (int j = 0; j < contacts.Length - 1 - i; j++)
+            {
+                if (string.Compare(contacts[j].surname, contacts[j + 1].surname) > 0 ||
+                    (contacts[j].surname == contacts[j + 1].surname &&
+                     string.Compare(contacts[j].name, contacts[j + 1].name) > 0))
+                {
+                    Contact temp = contacts[j];
+                    contacts[j] = contacts[j + 1];
+                    contacts[j + 1] = temp;
+                }
+            }
+        }   
+        Console.Write("\n\nId:\tИмя\t\t\tФамилия\t\tНомер телефона\t\tПочта");
+        foreach (var contact in contacts)
+        {
+            contact.display();
+        }
+    }
+}
